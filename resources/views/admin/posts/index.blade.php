@@ -21,8 +21,6 @@
                                     <th>Title</th>
                                     <th>Body</th>
                                     <th>Author</th>
-                                    <th>Category</th>
-                                    <th>Tags</th>
                                     <th>Published</th>
                                     <th>Action</th>
                                 </tr>
