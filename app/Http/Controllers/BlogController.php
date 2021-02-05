@@ -15,10 +15,13 @@ class BlogController extends Controller
             return $query->where('title', 'like', "%$search%")
                             ->orWhere('body', 'like', "%$search%");
         })->with('user')
-                    // ->withCount('comments')
-                    // ->published()
                     ->simplePaginate(5);
-
+        if ($request->ajax()) 
+        {
+            $posts = Post::orderBy('updated_at', 'DESC')->with('user')
+                        ->simplePaginate(5);
+            return view('frontend.data', compact('posts'));
+        }
         return view('frontend.index', compact('posts'));
     }
 
