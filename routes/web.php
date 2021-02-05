@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', 'BlogController@index');
+Route::get('/posts/{post}', 'BlogController@post');
+Route::post('/posts/{post}/comment', 'BlogController@comment')->middleware('auth');
+
+Auth::routes();
