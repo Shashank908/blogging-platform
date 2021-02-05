@@ -8,6 +8,7 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -44,6 +45,7 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         $post = Post::create([
+            'id'          => (string) Str::uuid(),
             'title'       => $request->title,
             'body'        => $request->body
         ]);

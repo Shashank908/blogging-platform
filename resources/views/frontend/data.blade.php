@@ -1,7 +1,12 @@
 @forelse ($posts as $post)
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            {{ $post->title }} - <small>by {{ $post->user->name }}</small>
+                            {{ $post->title }} - 
+                            <small>by 
+                                @if(isset($post->user))
+                                    {{ $post->user->name }}
+                                @endif
+                            </small>
 
                             <span class="pull-right">
                                 {{ $post->created_at->toDayDateTimeString() }}

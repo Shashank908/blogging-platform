@@ -10,7 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    public $incrementing = false;
+    protected $casts = ['id' => 'string'];
+
     protected $fillable = [
+        'id',
         'title',
         'body',
         'user_id',
@@ -27,31 +31,21 @@ class Post extends Model
                 $post->user_id = auth()->user()->id;
             }
         });
-
-        static::deleting(function ($post) {
-            $post->comments()->delete();
-            $post->tags()->detach();
-        });
     }
 
-    public function category()
+    public function getIncrementing()
     {
-        return $this->belongsTo(Category::class);
+        return false;
+    }
+
+    public function getKeyType()
+    {
+        return 'string';
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class)->withTimestamps();
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
     }
 
     public function scopePublished($query)

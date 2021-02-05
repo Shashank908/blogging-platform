@@ -6,11 +6,13 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\User;
 use Faker\Generator;
+use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Generator $faker) {
     static $password;
 
     return [
+        'id'             => (string) Str::uuid(),
         'name'           => $faker->name,
         'email'          => $faker->unique()->safeEmail,
         'password'       => $password ?: $password = bcrypt('password'),
@@ -20,6 +22,7 @@ $factory->define(User::class, function (Generator $faker) {
 
 $factory->define(Post::class, function (Generator $faker) {
     return [
+        'id'           => (string) Str::uuid(),
         'title'        => $faker->sentence,
         'body'         => $faker->paragraph(30),
         'user_id'      => rand(1, 10),

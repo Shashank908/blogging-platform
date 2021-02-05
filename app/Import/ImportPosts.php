@@ -6,6 +6,7 @@ use DB;
 use Config;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ImportPosts
 {
@@ -21,9 +22,11 @@ class ImportPosts
             foreach ($decoded_data->data as $key => $value) 
             {
                 $prepare_data[] = array (
+                    'id' => (string) Str::uuid(),
                     'title' => $value->title,
                     'body' => $value->description,
                     'is_published' => Config::get('blog.post_insert.is_published'),
+                    'user_id' => Config::get('blog.post_insert.admin_id'),
                     'created_at' => Carbon::now(),
                     'updated_at' => $value->publication_date
                 );
