@@ -13,11 +13,12 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $data = [
+            'id'       => '40d2b815-3ae8-4559-868b-7ae77942804f', 
             'name'     => 'Admin User',
             'email'    => 'admin@admin.com',
             'password' => bcrypt('password'),
         ];
-        if (User::where('email', 'admin@admin.com')->exists()) 
+        if (User::where('id', '40d2b815-3ae8-4559-868b-7ae77942804f')->exists()) 
         {
             unset($data['email']);
             User::where('email', 'admin@admin.com')
