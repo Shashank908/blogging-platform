@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use Auth;
+use Config;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Elasticsearch\ClientBuilder;
 
 class PostController extends Controller
 {
@@ -17,13 +19,45 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user_id = Auth::user()->id;
-        $posts = Post::where('user_id', $user_id)->paginate(10);
-        // $posts = Post::with(['user'])->paginate(10);
+        $user_id = Auth::user()->id; 
+        $es_data = $this->searchESdata($user_id);
+        $posts = [];
+        foreach ($es_data['hits'] as $key => $value) 
+        {
+            $posts[] = $value['_source'];
+        }
 
         return view('admin.posts.index', compact('posts'));
+    }
+
+    public function searchESdata($user_id)
+    {
+//         $deleteParams = [
+//             'index' => Config::get('blog.elsatic_search.default_index')
+//         ];
+//         $client = ClientBuilder::create()
+//                                 ->setHosts([Config::get('blog.elsatic_search.es_url')])
+//                                 ->build();
+//         $response = $client->indices()->delete($deleteParams);
+// dd($response);
+
+        $params = [
+            'index' => Config::get('blog.elsatic_search.default_index'),
+            'body'  => [
+                'query' => [
+                    'match' => [
+                        'user_id' => $user_id
+                    ]
+                ]
+            ]
+        ];
+        $client = ClientBuilder::create()
+                                ->setHosts([Config::get('blog.elsatic_search.es_url')])
+                                ->build();
+        $response = $client->search($params);
+        return $response['hits'];
     }
 
     /**
@@ -43,18 +77,33 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(PostRequest $request)
-    {
+    { 
+        $id = (string) Str::uuid();
+        $user = Auth::user();
         $post = Post::create([
-            'id'          => (string) Str::uuid(),
+            'id'          => $id,
             'title'       => $request->title,
             'body'        => $request->body
         ]);
+        $params = [
+            'index' => Config::get('blog.elsatic_search.default_index'),
+            'id'    => $id,
+            'body'  => [
+                        "id" => $id, 
+                        "title" => $request->title,
+                        "body" => $request->body,
+                        "user_id" => $user->id,
+                        "is_published" => 1,
+                        "user_name" => $user->name,
+                        "created_at" => gmdate('Y-m-d h:i:s'),
+                        "updated_at" => gmdate('Y-m-d h:i:s')
+                    ]
+        ];
+        $client = ClientBuilder::create()
+                                ->setHosts([Config::get('blog.elsatic_search.es_url')])
+                                ->build();
+        $response = $client->index($params);
 
-        // $tagsId = collect($request->tags)->map(function ($tag) {
-        //     return Tag::firstOrCreate(['name' => $tag])->id;
-        // });
-
-        // $post->tags()->attach($tagsId);
         flash()->overlay('Post created successfully.');
 
         return redirect('/admin/posts');

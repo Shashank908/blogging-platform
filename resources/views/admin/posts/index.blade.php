@@ -28,10 +28,10 @@
                             <tbody>
                                 @forelse ($posts as $post)
                                     <tr>
-                                        <td>{{ $post->title }}</td>
-                                        <td>{{ str_limit($post->body, 60) }}</td>
-                                        <td>{{ $post->user->name }}</td>
-                                        <td>{{ $post->published }}</td>
+                                        <td>{{ $post['title'] }}</td>
+                                        <td>{{ str_limit($post['body'], 60) }}</td>
+                                        <td>{{ $post['user_name'] }}</td>
+                                        <td>{{ $post['is_published'] }}</td>
                                         <td>
                                             @if (Auth::user()->is_admin)
                                                 @php
@@ -41,9 +41,9 @@
                                                         $label = 'Publish';
                                                     }
                                                 @endphp
-                                                <a href='{{ url("/admin/posts/{$post->id}/publish") }}' data-method="PUT" data-token="{{ csrf_token() }}" data-confirm="Are you sure?" class="btn btn-xs btn-warning">{{ $label }}</a>
+                                                <a href="{{ url("/admin/posts/{$post['id']}/publish") }}"" data-method="PUT" data-token="{{ csrf_token() }}" data-confirm="Are you sure?" class="btn btn-xs btn-warning">{{ $label }}</a>
                                             @endif
-                                            <a href='{{ url("/admin/posts/{$post->id}") }}' class="btn btn-xs btn-success">Show</a>
+                                            <a href='{{ url("/admin/posts/{$post['id']}") }}' class="btn btn-xs btn-success">Show</a>
                                         </td>
                                     </tr>
                                 @empty
@@ -54,7 +54,7 @@
                             </tbody>
                         </table>
 
-                        {!! $posts->links() !!}
+                        
 
                     </div>
                 </div>
