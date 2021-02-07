@@ -1,4 +1,16 @@
 ## Installation:-
+### Note:- All installations are done and tested in windows environment.
+
+### Software Requirement
+``` bash
+1.) PHP > 7.3
+2.) Composer
+3.) MySQL 5.7
+4.) ElasticSearch 7.10
+5.) In PHP ini file, maximum execution time and memory should be greater than 1 GB
+6.) cURL should be enabled
+
+```
 
 ``` bash
 1.) Take checkout from master branch
@@ -7,6 +19,7 @@
 4.) Run command php artisan migrate
 4.) Run command php artisan passport:install
 5.) Run command php artisan db:seed
+7.) Run command php artisan es:mapping
 
 ```
 

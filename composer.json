@@ -12,7 +12,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
-        "laracasts/flash": "^3.1"
+        "laracasts/flash": "^3.1",
+        "elasticsearch/elasticsearch": "^7.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

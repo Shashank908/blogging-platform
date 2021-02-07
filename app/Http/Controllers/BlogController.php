@@ -24,11 +24,4 @@ class BlogController extends Controller
         }
         return view('frontend.index', compact('posts'));
     }
-
-    public function post(Post $post)
-    {
-        $post = $post->load(['comments.user', 'tags', 'user', 'category']);
-
-        return view('frontend.post', compact('post'));
-    }
 }
