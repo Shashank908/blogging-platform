@@ -9,12 +9,7 @@ class BlogController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::when($request->search, function ($query) use ($request) {
-            $search = $request->search;
-
-            return $query->where('title', 'like', "%$search%")
-                            ->orWhere('body', 'like', "%$search%");
-        })->with('user')
+        $posts = Post::with('user')
                     ->simplePaginate(5);
         if ($request->ajax()) 
         {

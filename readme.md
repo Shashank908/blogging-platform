@@ -9,6 +9,7 @@
 4.) ElasticSearch 7.10
 5.) In PHP ini file, maximum execution time and memory should be greater than 1 GB
 6.) cURL should be enabled
+7.) Xdebugger Should be installed and configured for unit test check
 
 ```
 
