@@ -2,26 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use Config;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Elasticsearch\ClientBuilder;
 
 class BlogController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::when($request->search, function ($query) use ($request) {
-            $search = $request->search;
-
-            return $query->where('title', 'like', "%$search%")
-                            ->orWhere('body', 'like', "%$search%");
-        })->with('user')
-                    ->simplePaginate(5);
+        $client = ClientBuilder::create()
+                                ->setHosts([Config::get('blog.elsatic_search.es_url')])
+                                ->build();
         if ($request->ajax()) 
         {
-            $posts = Post::orderBy('updated_at', 'DESC')->with('user')
-                        ->simplePaginate(5);
+            $params = [
+                'index' => Config::get('blog.elsatic_search.default_index'),
+                "body" => ["sort" => [
+                    ['created_at' => ['order' => 'desc']],
+                ]]
+            ];
+            $posts = $this->prepareData($client->search($params));
+
             return view('frontend.data', compact('posts'));
+        } else {
+            $params = [
+                'index' => Config::get('blog.elsatic_search.default_index'),
+                '_source' => '*'
+            ];
+            
+            $posts = $this->prepareData($client->search($params));
+            
         }
         return view('frontend.index', compact('posts'));
+    }
+
+    public function prepareData($response)
+    {
+        $data = [];
+        $raw_data = $response['hits']['hits'];
+        foreach ($raw_data as $value) 
+        {
+            $data[] = $value['_source'];
+        }
+        return $data;
     }
 }

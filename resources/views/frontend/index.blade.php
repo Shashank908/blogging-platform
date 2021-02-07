@@ -19,7 +19,7 @@
                 </div>
 
                 <div align="center">
-                    {!! $posts->appends(['search' => request()->get('search')])->links() !!}
+                    
                 </div>
 
             </div>
