@@ -52,10 +52,21 @@ class PostTest extends TestCase
     public function test_show_post()
     {
         $post = Post::first();
+        Session::start();
         $user = factory(User::class)->create();
         $response = $this->actingAs($user)->get('/posts/'.$post->id);
         
         $response->assertStatus(200);
         
+    }
+
+    public function test_post_publish()
+    {
+        $post = Post::first();
+        Session::start();
+        $user = factory(User::class)->create();
+        $response = $this->actingAs($user)->get('/posts/'.$post->id.'/publish'); 
+        
+        $response->assertStatus(200);
     }
 }

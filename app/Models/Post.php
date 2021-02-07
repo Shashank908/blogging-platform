@@ -38,33 +38,8 @@ class Post extends Model
         return false;
     }
 
-    public function getKeyType()
-    {
-        return 'string';
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function scopePublished($query)
-    {
-        return $query->where('is_published', true);
-    }
-
-    public function scopeDrafted($query)
-    {
-        return $query->where('is_published', false);
-    }
-
-    public function getPublishedAttribute()
-    {
-        return ($this->is_published) ? 'Yes' : 'No';
-    }
-
-    public function getEtagAttribute()
-    {
-        return hash('sha256', "product-{$this->id}-{$this->updated_at}");
     }
 }
