@@ -21,6 +21,11 @@
 5.) Run command php artisan db:seed
 7.) Run command php artisan es:mapping
 
+If you want to Re-index the Posts into elastic Search inorder to keep data in Sync.
+Then,
+
+Run Command php artisan es:reindexing
+
 ```
 
 ```````
