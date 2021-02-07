@@ -16,12 +16,12 @@
 // });
 
 Route::get('/', 'BlogController@index');
-Route::get('/posts/{post}', 'BlogController@post');
+Route::get('/posts/{post}', 'Admin\PostController@show');
 Route::post('/posts/{post}/comment', 'BlogController@comment')->middleware('auth');
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index');
+Route::get('/profile', 'Auth\\ProfileController@index')->middleware('auth');
+Route::get('/home', 'Admin\PostController@index');
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
     Route::resource('/posts', 'PostController');

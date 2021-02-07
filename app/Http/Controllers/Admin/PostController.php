@@ -21,15 +21,20 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        $user_id = Auth::user()->id; 
+        $user_id = Auth::user()->id;  
+        $posts = $this->getPosts($user_id);
+        return view('admin.posts.index', compact('posts'));
+    }
+
+    public function getPosts($user_id)
+    {
         $es_data = $this->searchESdata($user_id);
         $posts = [];
         foreach ($es_data['hits'] as $key => $value) 
         {
             $posts[] = $value['_source'];
         }
-
-        return view('admin.posts.index', compact('posts'));
+        return $posts;
     }
 
     public function searchESdata($user_id)
@@ -103,7 +108,7 @@ class PostController extends Controller
                                 ->setHosts([Config::get('blog.elsatic_search.es_url')])
                                 ->build();
         $response = $client->index($params);
-
+        
         flash()->overlay('Post created successfully.');
 
         return redirect('/admin/posts');
@@ -115,10 +120,16 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($post_id)
     {
-        $post = $post->load(['user']);
-
+        $params = [
+            'index' => Config::get('blog.elsatic_search.default_index'),
+            'id'    => $post_id
+        ];
+        $client = ClientBuilder::create()
+                                ->setHosts([Config::get('blog.elsatic_search.es_url')])
+                                ->build();
+        $post = ($client->get($params))['_source'];
         return view('admin.posts.show', compact('post'));
     }
 
